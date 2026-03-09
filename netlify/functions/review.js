@@ -31,7 +31,7 @@ Return ONLY valid JSON (no markdown, no backticks) in this exact format:
     }
   ],
   "positives": ["List of things done well"],
-  "refactoredSnippet": "Improved version or null"
+  "refactoredSnippet": "Improved version of the SQL"
 }
 Severity must be one of: critical, warning, suggestion.
 Category must be one of: Performance, Security, Readability, Best Practice, Anti-pattern.
@@ -45,18 +45,22 @@ Check for: SELECT *, cartesian joins, N+1 patterns, non-sargable predicates, SQL
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'No SQL provided' }) };
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
+
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: 'Review this SQL:\n\n' + sql }]
+        contents: [{
+          parts: [{
+            text: SYSTEM_PROMPT + '\n\nReview this SQL:\n\n' + sql
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 2048
+        }
       })
     });
 
@@ -66,7 +70,7 @@ Check for: SELECT *, cartesian joins, N+1 patterns, non-sargable predicates, SQL
       return { statusCode: 500, headers, body: JSON.stringify({ error: data.error.message }) };
     }
 
-    const text = (data.content || []).map(i => i.text || '').join('');
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const clean = text.replace(/```json|```/g, '').trim();
 
     return {
