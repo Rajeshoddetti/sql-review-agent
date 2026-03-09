@@ -45,22 +45,20 @@ Check for: SELECT *, cartesian joins, N+1 patterns, non-sargable predicates, SQL
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'No SQL provided' }) };
     }
 
-    const geminiKey = process.env.GEMINI_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
-
-    const response = await fetch(url, {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: SYSTEM_PROMPT + '\n\nReview this SQL:\n\n' + sql
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 2048
-        }
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: 'Review this SQL:\n\n' + sql }
+        ],
+        temperature: 0.2,
+        max_tokens: 2048
       })
     });
 
@@ -70,7 +68,7 @@ Check for: SELECT *, cartesian joins, N+1 patterns, non-sargable predicates, SQL
       return { statusCode: 500, headers, body: JSON.stringify({ error: data.error.message }) };
     }
 
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = data.choices?.[0]?.message?.content || '';
     const clean = text.replace(/```json|```/g, '').trim();
 
     return {
