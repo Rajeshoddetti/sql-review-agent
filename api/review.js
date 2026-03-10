@@ -71,7 +71,7 @@ export default async function handler(req, res) {
           { role: 'user', content: 'Review this SQL:\n\n' + sql }
         ],
         temperature: 0.2,
-        max_tokens: 3000
+        max_tokens: 6000
       })
     });
 
