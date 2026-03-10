@@ -276,7 +276,7 @@ async function runReview(){
   if(!sql) return;
   setState('loading');
   try{
-    const res = await fetch('/.netlify/functions/review', {
+    const res = await fetch('/api/review', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({sql})
