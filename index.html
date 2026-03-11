@@ -15,7 +15,7 @@
   @keyframes spin   { to { transform:rotate(360deg); } }
   @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
   @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
+ 
   #header {
     background:linear-gradient(90deg,#0d1117,#161b22);
     border-bottom:1px solid #21262d;
@@ -36,9 +36,9 @@
     border:1px solid #21262d; display:flex; align-items:center; gap:6px;
   }
   #badge-dot { width:7px; height:7px; border-radius:50%; background:#00e676; animation:pulse 2s infinite; }
-
+ 
   #main { display:flex; flex:1; overflow:hidden; min-height:0; }
-
+ 
   #left {
     width:44%; border-right:1px solid #21262d;
     display:flex; flex-direction:column;
@@ -73,9 +73,9 @@
   #run-btn:hover { box-shadow:0 0 28px #388bfd70; }
   #run-btn:disabled { background:#1f2937; color:#7d8590; cursor:not-allowed; box-shadow:none; }
   #btn-wrap { padding:14px 16px; border-top:1px solid #21262d; background:#161b22; }
-
+ 
   #right { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-
+ 
   #idle-state {
     flex:1; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:12px;
@@ -83,7 +83,7 @@
   #idle-icon { font-size:52px; opacity:0.15; }
   #idle-text { font-size:13px; color:#484f58; }
   #idle-sub  { font-size:11px; color:#30363d; text-align:center; max-width:280px; line-height:1.8; }
-
+ 
   #loading-state {
     flex:1; display:none; flex-direction:column;
     align-items:center; justify-content:center; gap:20px;
@@ -95,9 +95,9 @@
   }
   #loading-text { color:#e6edf3; font-size:13px; font-weight:600; }
   #loading-sub  { color:#7d8590; font-size:10px; letter-spacing:1px; }
-
+ 
   #results { flex:1; display:none; flex-direction:column; overflow:hidden; }
-
+ 
   #score-bar {
     padding:14px 22px 10px; border-bottom:1px solid #21262d;
     background:#161b22; animation:fadeIn 0.4s ease; flex-shrink:0;
@@ -111,7 +111,7 @@
   .badge-critical   { background:#2a0505; border:1px solid #ff4d4d; color:#ff4d4d; }
   .badge-warning    { background:#1a1000; border:1px solid #ffaa00; color:#ffaa00; }
   .badge-suggestion { background:#001525; border:1px solid #4db8ff; color:#4db8ff; }
-
+ 
   #breakdown-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
   .breakdown-card {
     flex:1; min-width:80px;
@@ -120,7 +120,7 @@
   }
   .breakdown-label { font-size:9px; color:#7d8590; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
   .breakdown-val   { font-size:18px; font-weight:800; }
-
+ 
   #meta-row {
     display:flex; gap:8px; padding:8px 22px;
     border-bottom:1px solid #21262d; background:#0d1117;
@@ -136,7 +136,7 @@
   .cx-medium { color:#ffaa00; }
   .cx-high   { color:#ff8800; }
   .cx-veryhigh { color:#ff4d4d; }
-
+ 
   #tabs {
     display:flex; border-bottom:1px solid #21262d;
     background:#0d1117; padding:0 22px; flex-shrink:0; overflow-x:auto;
@@ -150,11 +150,11 @@
   }
   .tab-btn:hover { color:#e6edf3; }
   .tab-btn.active { color:#e6edf3; border-bottom-color:#388bfd; }
-
+ 
   #tab-content { padding:14px 22px; overflow:auto; flex:1; }
   .tab-panel { display:none; animation:fadeIn 0.3s ease; }
   .tab-panel.active { display:block; }
-
+ 
   .finding { border-radius:8px; overflow:hidden; margin-bottom:8px; animation:fadeIn 0.3s ease; }
   .finding-header { padding:11px 14px; cursor:pointer; display:flex; align-items:center; gap:10px; }
   .finding-header:hover { filter:brightness(1.1); }
@@ -169,7 +169,7 @@
   .fix-box { background:#0a1a0a; border:1px solid #00e67618; border-left:3px solid #00e676; border-radius:6px; padding:10px 12px; }
   .fix-label { font-size:9px; color:#00e676; letter-spacing:1.5px; margin-bottom:6px; font-weight:700; }
   .fix-code  { font-size:11px; color:#c9d1d9; line-height:1.7; white-space:pre-wrap; font-family:inherit; }
-
+ 
   .positive {
     display:flex; gap:10px; align-items:flex-start;
     padding:11px 14px; margin-bottom:8px;
@@ -178,7 +178,7 @@
     font-size:12px; color:#8b949e; line-height:1.7;
   }
   .pos-check { color:#00e676; flex-shrink:0; }
-
+ 
   #refactor-label { font-size:10px; color:#7d8590; letter-spacing:1px; margin-bottom:10px; text-transform:uppercase; }
   #refactor-wrap { position:relative; }
   #copy-btn {
@@ -194,7 +194,7 @@
     overflow:auto; white-space:pre-wrap; font-family:'JetBrains Mono','Fira Code',monospace;
     min-height:80px;
   }
-
+ 
   .index-card {
     background:#0d1117; border:1px solid #21262d;
     border-left:3px solid #388bfd; border-radius:8px;
@@ -207,7 +207,7 @@
     background:#161b22; border-radius:5px; padding:8px 10px;
     font-size:10px; color:#00e676; font-family:inherit; white-space:pre-wrap;
   }
-
+ 
   .opt-item {
     display:flex; gap:10px; align-items:flex-start;
     padding:10px 14px; margin-bottom:8px;
@@ -216,7 +216,7 @@
     font-size:12px; color:#8b949e; line-height:1.7;
   }
   .opt-icon { color:#388bfd; flex-shrink:0; }
-
+ 
   #error-box {
     display:none; margin:20px;
     background:#2a0505; border:1px solid #ff4d4d;
@@ -226,91 +226,94 @@
 </style>
 </head>
 <body>
-
+ 
 <div id="header">
-  <div id="header-left">
-    <div id="logo">🔍</div>
-    <div>
-      <div id="title">SQL Review Agent</div>
-      <div id="subtitle">AI-Powered · Data Engineering · Riveron</div>
-    </div>
-  </div>
-  <div id="badge">
-    <div id="badge-dot"></div>
-    <span style="color:#00e676; font-size:10px;">LIVE</span>
-  </div>
+<div id="header-left">
+<div id="logo">🔍</div>
+<div>
+<div id="title">SQL Review Agent</div>
+<div id="subtitle">AI-Powered · Data Engineering · Riveron</div>
 </div>
-
+</div>
+<div id="badge">
+<div id="badge-dot"></div>
+<span style="color:#00e676; font-size:10px;">LIVE</span>
+</div>
+</div>
+ 
 <div id="main">
-  <div id="left">
-    <div id="editor-bar">
-      <div class="dot" style="background:#ff5f57"></div>
-      <div class="dot" style="background:#ffbd2e"></div>
-      <div class="dot" style="background:#28c840"></div>
-      <span id="editor-label">query.sql</span>
-      <button id="clear-btn" onclick="document.getElementById('sql-input').value=''">CLEAR</button>
-    </div>
-    <textarea id="sql-input" placeholder="-- Paste your SQL query here...
--- Try SELECT *, old-style joins, or correlated subqueries!"></textarea>
-    <div id="btn-wrap">
-      <button id="run-btn" onclick="runReview()">▶  RUN CODE REVIEW</button>
-    </div>
-  </div>
-
-  <div id="right">
-    <div id="idle-state">
-      <div id="idle-icon">🔍</div>
-      <div id="idle-text">Paste SQL and run a review</div>
-      <div id="idle-sub">Detects performance issues, anti-patterns, security risks, semantic safety violations, and best practice violations</div>
-    </div>
-    <div id="loading-state">
-      <div id="spinner"></div>
-      <div id="loading-text">Analyzing SQL...</div>
-      <div id="loading-sub">CHECKING 15+ RULE CATEGORIES</div>
-    </div>
-    <div id="error-box"></div>
-    <div id="results">
-      <div id="score-bar">
-        <div id="score-row">
-          <div>
-            <div id="score-num">—</div>
-            <div id="score-label">QUALITY SCORE</div>
-          </div>
-          <div style="flex:1">
-            <div id="summary-text"></div>
-            <div id="badges"></div>
-          </div>
-        </div>
-        <div id="breakdown-row"></div>
-      </div>
-
-      <div id="meta-row"></div>
-
-      <div id="tabs">
-        <button class="tab-btn active" onclick="switchTab('findings',this)" id="tab-findings">Findings</button>
-        <button class="tab-btn" onclick="switchTab('positives',this)" id="tab-positives">Positives</button>
-        <button class="tab-btn" onclick="switchTab('refactor',this)" id="tab-refactor">Refactored SQL</button>
-        <button class="tab-btn" onclick="switchTab('indexes',this)" id="tab-indexes">Index Advisor</button>
-        <button class="tab-btn" onclick="switchTab('optimize',this)" id="tab-optimize">Optimizations</button>
-      </div>
-
-      <div id="tab-content">
-        <div id="panel-findings"  class="tab-panel active"></div>
-        <div id="panel-positives" class="tab-panel"></div>
-        <div id="panel-refactor"  class="tab-panel">
-          <div id="refactor-label">AI-Suggested Refactored Version</div>
-          <div id="refactor-wrap">
-            <button id="copy-btn" onclick="copyRefactor()">📋 COPY</button>
-            <pre id="refactor-code"></pre>
-          </div>
-        </div>
-        <div id="panel-indexes"  class="tab-panel"></div>
-        <div id="panel-optimize" class="tab-panel"></div>
-      </div>
-    </div>
-  </div>
+<div id="left">
+<div id="editor-bar">
+<div class="dot" style="background:#ff5f57"></div>
+<div class="dot" style="background:#ffbd2e"></div>
+<div class="dot" style="background:#28c840"></div>
+<span id="editor-label">query.sql</span>
+<button id="clear-btn" onclick="document.getElementById('sql-input').value=''">CLEAR</button>
 </div>
-
+<textarea id="sql-input" placeholder="-- Paste your SQL query here...
+-- Try SELECT *, old-style joins, or correlated subqueries!"></textarea>
+<div id="btn-wrap">
+<button id="run-btn" onclick="runReview()">▶  RUN CODE REVIEW</button>
+</div>
+</div>
+ 
+  <div id="right">
+<div id="idle-state">
+<div id="idle-icon">🔍</div>
+<div id="idle-text">Paste SQL and run a review</div>
+<div id="idle-sub">Detects performance issues, anti-patterns, security risks, semantic safety violations, and best practice violations</div>
+</div>
+ 
+    <div id="loading-state">
+<div id="spinner"></div>
+<div id="loading-text">Analyzing SQL...</div>
+<div id="loading-sub">CHECKING 15+ RULE CATEGORIES</div>
+</div>
+ 
+    <div id="error-box"></div>
+ 
+    <div id="results">
+<div id="score-bar">
+<div id="score-row">
+<div>
+<div id="score-num">—</div>
+<div id="score-label">QUALITY SCORE</div>
+</div>
+<div style="flex:1">
+<div id="summary-text"></div>
+<div id="badges"></div>
+</div>
+</div>
+<div id="breakdown-row"></div>
+</div>
+ 
+      <div id="meta-row"></div>
+ 
+      <div id="tabs">
+<button class="tab-btn active" onclick="switchTab('findings',this)" id="tab-findings">Findings</button>
+<button class="tab-btn" onclick="switchTab('positives',this)" id="tab-positives">Positives</button>
+<button class="tab-btn" onclick="switchTab('refactor',this)" id="tab-refactor">Refactored SQL</button>
+<button class="tab-btn" onclick="switchTab('indexes',this)" id="tab-indexes">Index Advisor</button>
+<button class="tab-btn" onclick="switchTab('optimize',this)" id="tab-optimize">Optimizations</button>
+</div>
+ 
+      <div id="tab-content">
+<div id="panel-findings"  class="tab-panel active"></div>
+<div id="panel-positives" class="tab-panel"></div>
+<div id="panel-refactor"  class="tab-panel">
+<div id="refactor-label">AI-Suggested Refactored Version</div>
+<div id="refactor-wrap">
+<button id="copy-btn" onclick="copyRefactor()">📋 COPY</button>
+<pre id="refactor-code"></pre>
+</div>
+</div>
+<div id="panel-indexes"  class="tab-panel"></div>
+<div id="panel-optimize" class="tab-panel"></div>
+</div>
+</div>
+</div>
+</div>
+ 
 <script>
 const SEV = {
   critical:   {color:'#ff4d4d',bg:'#1a0505',bl:'#ff4d4d',icon:'⛔',label:'CRITICAL'},
@@ -322,20 +325,30 @@ const CAT_ICON = {
   'Best Practice':'✅', 'Anti-pattern':'🚫',
   Correctness:'🔧', 'Semantic-Safety':'⚖️'
 };
-
+ 
+// ✅ XSS-safe helper: use for any LLM-provided strings you place into innerHTML
+function escapeHTML(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+ 
 function scoreColor(s){ return s>=80?'#00e676':s>=60?'#ffaa00':'#ff4d4d'; }
-
+ 
 function cxClass(level){
   return {'Low':'cx-low','Medium':'cx-medium','High':'cx-high','Very High':'cx-veryhigh'}[level]||'cx-medium';
 }
-
+ 
 function switchTab(name,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('panel-'+name).classList.add('active');
 }
-
+ 
 function setState(state){
   document.getElementById('idle-state').style.display    = state==='idle'    ?'flex':'none';
   document.getElementById('loading-state').style.display = state==='loading' ?'flex':'none';
@@ -344,7 +357,7 @@ function setState(state){
   document.getElementById('run-btn').disabled = state==='loading';
   document.getElementById('run-btn').textContent = state==='loading'?'⏳  ANALYZING...':'▶  RUN CODE REVIEW';
 }
-
+ 
 function toggleFinding(id){
   const body=document.getElementById('fb-'+id);
   const chev=document.getElementById('fc-'+id);
@@ -352,7 +365,7 @@ function toggleFinding(id){
   body.style.display=open?'none':'block';
   chev.textContent=open?'▼':'▲';
 }
-
+ 
 function copyRefactor(){
   const text=document.getElementById('refactor-code').textContent;
   navigator.clipboard.writeText(text).then(()=>{
@@ -361,7 +374,7 @@ function copyRefactor(){
     setTimeout(()=>btn.textContent='📋 COPY',2000);
   });
 }
-
+ 
 async function runReview(){
   const sql=document.getElementById('sql-input').value.trim();
   if(!sql) return;
@@ -377,19 +390,19 @@ async function runReview(){
     renderResults(r);
   }catch(err){
     const eb=document.getElementById('error-box');
-    eb.innerHTML=`<strong>⛔ Error</strong><br><br>${err.message}<br><br>Please try again or contact Rajesh.`;
+    eb.innerHTML = `<strong>⛔ Error</strong><br><br>${escapeHTML(err.message)}<br><br>Please try again or contact Rajesh.`;
     setState('error');
   }
 }
-
+ 
 function renderResults(r){
   const sc=document.getElementById('score-num');
-  sc.textContent=r.score;
-  sc.style.color=scoreColor(r.score);
-  sc.style.textShadow=`0 0 24px ${scoreColor(r.score)}80`;
-
+  sc.textContent=r.score ?? '—';
+  sc.style.color=scoreColor(Number(r.score)||0);
+  sc.style.textShadow=`0 0 24px ${scoreColor(Number(r.score)||0)}80`;
+ 
   document.getElementById('summary-text').textContent=r.querySummary||r.summary||'';
-
+ 
   const counts={critical:0,warning:0,suggestion:0};
   (r.findings||[]).forEach(f=>counts[f.severity]=(counts[f.severity]||0)+1);
   const bd=document.getElementById('badges');
@@ -397,7 +410,7 @@ function renderResults(r){
   if(counts.critical)   bd.innerHTML+=`<span class="badge badge-critical">⛔ ${counts.critical} Critical</span>`;
   if(counts.warning)    bd.innerHTML+=`<span class="badge badge-warning">⚠️ ${counts.warning} Warning</span>`;
   if(counts.suggestion) bd.innerHTML+=`<span class="badge badge-suggestion">💡 ${counts.suggestion} Suggestion</span>`;
-
+ 
   // SCORE BREAKDOWN
   const bdr=document.getElementById('breakdown-row');
   bdr.innerHTML='';
@@ -410,29 +423,29 @@ function renderResults(r){
       const val=r.scoreBreakdown[c.key]??'—';
       const col=typeof val==='number'?scoreColor(val):'#7d8590';
       bdr.innerHTML+=`<div class="breakdown-card">
-        <div class="breakdown-label">${c.icon} ${c.label}</div>
-        <div class="breakdown-val" style="color:${col}">${val}</div>
-      </div>`;
+<div class="breakdown-label">${c.icon} ${c.label}</div>
+<div class="breakdown-val" style="color:${col}">${escapeHTML(val)}</div>
+</div>`;
     });
   }
-
+ 
   // META ROW
   const meta=document.getElementById('meta-row');
   meta.innerHTML='';
   if(r.detectedDB && r.detectedDB!=='unknown')
-    meta.innerHTML+=`<div class="meta-chip"><span>🗄️</span><span class="meta-chip-label">DB:</span>${r.detectedDB.toUpperCase()}</div>`;
+    meta.innerHTML+=`<div class="meta-chip"><span>🗄️</span><span class="meta-chip-label">DB:</span>${escapeHTML(String(r.detectedDB).toUpperCase())}</div>`;
   if(r.complexityScore){
-    meta.innerHTML+=`<div class="meta-chip"><span>📊</span><span class="meta-chip-label">Complexity:</span><span class="${cxClass(r.complexityScore.level)}">${r.complexityScore.level} (${r.complexityScore.value}/100)</span></div>`;
+    meta.innerHTML+=`<div class="meta-chip"><span>📊</span><span class="meta-chip-label">Complexity:</span><span class="${cxClass(r.complexityScore.level)}">${escapeHTML(r.complexityScore.level)} (${escapeHTML(r.complexityScore.value)}/100)</span></div>`;
     if(r.complexityScore.reason)
-      meta.innerHTML+=`<div class="meta-chip" style="flex:1"><span>ℹ️</span><span style="color:#7d8590;font-size:10px">${r.complexityScore.reason}</span></div>`;
+      meta.innerHTML+=`<div class="meta-chip" style="flex:1"><span>ℹ️</span><span style="color:#7d8590;font-size:10px">${escapeHTML(r.complexityScore.reason)}</span></div>`;
   }
-
+ 
   // TAB LABELS
   document.getElementById('tab-findings').textContent  =`Findings (${(r.findings||[]).length})`;
   document.getElementById('tab-positives').textContent =`Positives (${(r.positives||[]).length})`;
   document.getElementById('tab-indexes').textContent   =`Index Advisor (${(r.indexRecommendations||[]).length})`;
   document.getElementById('tab-optimize').textContent  =`Optimizations (${(r.optimizationSuggestions||[]).length})`;
-
+ 
   // FINDINGS
   const fp=document.getElementById('panel-findings');
   fp.innerHTML='';
@@ -445,52 +458,53 @@ function renderResults(r){
       d.className='finding';
       d.style.cssText=`background:${cfg.bg};border:1px solid ${cfg.bl}30;border-left:3px solid ${cfg.bl};`;
       d.innerHTML=`
-        <div class="finding-header" onclick="toggleFinding(${f.id})">
-          <span style="font-size:15px">${cfg.icon}</span>
-          <div style="flex:1">
-            <div class="finding-meta">
-              <span class="sev-label" style="color:${cfg.color}">${cfg.label}</span>
-              <span class="cat-label">${CAT_ICON[f.category]||''} ${f.category}</span>
-              ${f.lineRef?`<span class="line-ref">${f.lineRef}</span>`:''}
-            </div>
-            <div class="finding-title">${f.title}</div>
-          </div>
-          <span class="finding-chevron" id="fc-${f.id}">▼</span>
-        </div>
-        <div class="finding-body" id="fb-${f.id}" style="display:none;border-top:1px solid ${cfg.bl}20">
-          <div class="finding-desc">${f.description}</div>
-          ${f.fix?`<div class="fix-box"><div class="fix-label">✅ RECOMMENDED FIX</div><pre class="fix-code">${f.fix}</pre></div>`:''}
-        </div>`;
+<div class="finding-header" onclick="toggleFinding(${escapeHTML(f.id)})">
+<span style="font-size:15px">${cfg.icon}</span>
+<div style="flex:1">
+<div class="finding-meta">
+<span class="sev-label" style="color:${cfg.color}">${cfg.label}</span>
+<span class="cat-label">${CAT_ICON[f.category]||''} ${escapeHTML(f.category)}</span>
+${f.lineRef?`<span class="line-ref">${escapeHTML(f.lineRef)}</span>`:''}
+</div>
+<div class="finding-title">${escapeHTML(f.title)}</div>
+</div>
+<span class="finding-chevron" id="fc-${escapeHTML(f.id)}">▼</span>
+</div>
+<div class="finding-body" id="fb-${escapeHTML(f.id)}" style="display:none;border-top:1px solid ${cfg.bl}20">
+<div class="finding-desc">${escapeHTML(f.description)}</div>
+${f.fix?`<div class="fix-box"><div class="fix-label">✅ RECOMMENDED FIX</div><pre class="fix-code">${escapeHTML(f.fix)}</pre></div>`:''}
+</div>`;
       fp.appendChild(d);
     });
   }
-
+ 
   // POSITIVES
   const pp=document.getElementById('panel-positives');
   pp.innerHTML='';
   (r.positives||[]).forEach(p=>{
-    pp.innerHTML+=`<div class="positive"><span class="pos-check">✓</span><span>${p}</span></div>`;
+    pp.innerHTML+=`<div class="positive"><span class="pos-check">✓</span><span>${escapeHTML(p)}</span></div>`;
   });
-
-  // REFACTOR
+ 
+  // REFACTOR (safe already)
   document.getElementById('refactor-code').textContent=r.refactoredSnippet||'No refactored snippet provided.';
-
-  // INDEX ADVISOR
+ 
+  // INDEX ADVISOR (escape LLM-provided strings)
   const ip=document.getElementById('panel-indexes');
   ip.innerHTML='';
   if(!(r.indexRecommendations||[]).length){
     ip.innerHTML='<div style="color:#7d8590;text-align:center;padding:30px;font-size:12px;">No index recommendations for this query.</div>';
   } else {
     (r.indexRecommendations||[]).forEach(idx=>{
+      const cols = Array.isArray(idx.columns) ? idx.columns.join(', ') : '';
       ip.innerHTML+=`<div class="index-card">
-        <div class="index-table">📋 ${idx.table}</div>
-        <div class="index-cols">Columns: <strong>${(idx.columns||[]).join(', ')}</strong></div>
-        <div class="index-reason">${idx.reason}</div>
-        ${idx.example?`<pre class="index-example">${idx.example}</pre>`:''}
-      </div>`;
+<div class="index-table">📋 ${escapeHTML(idx.table)}</div>
+<div class="index-cols">Columns: <strong>${escapeHTML(cols)}</strong></div>
+<div class="index-reason">${escapeHTML(idx.reason)}</div>
+${idx.example?`<pre class="index-example">${escapeHTML(idx.example)}</pre>`:''}
+</div>`;
     });
   }
-
+ 
   // OPTIMIZATIONS
   const op=document.getElementById('panel-optimize');
   op.innerHTML='';
@@ -498,10 +512,10 @@ function renderResults(r){
     op.innerHTML='<div style="color:#7d8590;text-align:center;padding:30px;font-size:12px;">No additional optimization suggestions.</div>';
   } else {
     (r.optimizationSuggestions||[]).forEach(s=>{
-      op.innerHTML+=`<div class="opt-item"><span class="opt-icon">→</span><span>${s}</span></div>`;
+      op.innerHTML+=`<div class="opt-item"><span class="opt-icon">→</span><span>${escapeHTML(s)}</span></div>`;
     });
   }
-
+ 
   // RESET TABS
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
