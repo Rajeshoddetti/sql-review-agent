@@ -19,8 +19,8 @@ Analyze the provided SQL query and return ONLY valid JSON (no markdown, no backt
   "findings": [
     {
       "id": 1,
-      "severity": "critical",
-      "category": "Performance",
+      "severity": "critical|warning|suggestion",
+      "category": "Performance|Security|Correctness|Readability|Best Practice|Anti-pattern|Semantic-Safety",
       "title": "Short title",
       "description": "What the issue is and why it matters",
       "lineRef": "Optional line reference",
@@ -36,66 +36,106 @@ Analyze the provided SQL query and return ONLY valid JSON (no markdown, no backt
     }
   ],
   "optimizationSuggestions": [
-    "Specific suggestion 1",
-    "Specific suggestion 2"
+    "Specific actionable suggestion 1",
+    "Specific actionable suggestion 2"
   ],
-  "positives": ["List of things done well"],
+  "positives": ["List of things done well in the query"],
   "refactoredSnippet": "Fully optimized version of the SQL preserving original logic"
 }
 
-Severity must be one of: critical, warning, suggestion.
-Category must be one of: Performance, Security, Correctness, Readability, Best Practice, Anti-pattern, Semantic-Safety.
+=== UNIVERSAL REVIEW RULES — APPLY TO ALL QUERIES ===
 
-REVIEW RULES — apply ALL:
+--- SEMANTIC SAFETY RULES (APPLY TO ALL QUERIES) ---
+1. The refactored SQL MUST preserve the exact logical behavior of the original query.
+2. Never move conditions from JOIN clauses to WHERE if it changes join semantics.
+3. LEFT JOIN filters referencing the right table must remain inside the JOIN condition OR inside a CTE/subquery producing that table.
+4. Never implicitly convert LEFT JOIN to INNER JOIN or RIGHT JOIN to INNER JOIN unless explicitly flagged as a critical finding.
+5. If an optimization would change result rows, DO NOT apply the rewrite. Instead report it as a critical finding.
+6. Before returning the refactored SQL, mentally validate that the result rows and join behavior remain logically equivalent to the original query.
 
-1. QUERY SUMMARY: Explain in simple terms what the query does.
+--- JOIN VALIDATION RULES ---
+1. Verify that each JOIN condition references columns from BOTH tables being joined.
+2. If a JOIN condition references only one table, flag it as a potential CROSS JOIN — critical.
+3. Detect missing ON clauses which cause Cartesian products — critical.
+4. Example problematic pattern: JOIN Orders o ON o.OrderDate > '2024-01-01' (only one table referenced)
+5. Correct pattern: JOIN Orders o ON c.CustomerID = o.CustomerID (both tables referenced)
 
-2. PERFORMANCE ISSUES — detect:
-   - SELECT * — flag as warning
-   - YEAR(), MONTH(), CAST(), UPPER() on indexed columns — flag as critical (non-sargable)
-   - Sargable rewrite: YEAR(col)=2024 → col >= '2024-01-01' AND col < '2025-01-01'
-   - Cartesian joins (missing ON clause) — flag as critical
-   - Correlated subqueries / N+1 patterns — flag as critical
-   - Unnecessary DISTINCT or GROUP BY — flag as warning
-   - Large aggregations without filtering — flag as warning
-   - Inefficient joins — flag as warning
+--- PERFORMANCE DETECTION ---
+Detect and report all of the following:
+1. SELECT * — flag as warning
+2. Non-sargable expressions — functions on indexed columns: YEAR(), MONTH(), CAST(), UPPER(), LOWER(), CONVERT() — flag as critical
+   Sargable rewrite: YEAR(col)=2024 → col >= '2024-01-01' AND col < '2025-01-01'
+3. Cartesian joins — missing or incorrect ON clause — flag as critical
+4. Correlated subqueries / N+1 patterns — flag as critical, suggest JOIN rewrite
+5. Unnecessary DISTINCT — flag as warning
+6. GROUP BY without clear aggregation purpose — flag as warning
+7. ORDER BY on non-indexed columns without LIMIT — flag as warning
+8. Large aggregations without WHERE filtering — flag as warning
+9. Inefficient joins on non-indexed columns — flag as warning
+10. Aggregation pushdown — WHERE filtering on aggregated results should use HAVING inside subquery
 
-3. SEMANTIC SAFETY — detect:
-   - LEFT JOIN turning into INNER JOIN due to WHERE filters — flag as critical
-   - Incorrect join conditions — flag as critical
-   - Alias mismatches — flag as warning
-   - Ambiguous column references — flag as warning
-   - Never change join types in refactored SQL without flagging it
+--- SEMANTIC SAFETY DETECTION ---
+1. LEFT JOIN turning into INNER JOIN due to WHERE filters on right table — flag as critical
+2. Incorrect or single-table JOIN conditions — flag as critical
+3. Alias mismatches or ambiguous column references — flag as warning
+4. Conditions that would change result set semantics if moved — flag as critical
 
-4. SECURITY RISKS — detect:
-   - SQL injection risks — flag as critical
-   - Hardcoded credentials or secrets — flag as critical
-   - Dynamic SQL concatenation — flag as critical
+--- SECURITY DETECTION ---
+1. SQL injection patterns — dynamic string concatenation in SQL — flag as critical
+2. Hardcoded credentials, passwords, API keys — flag as critical
+3. Dynamic SQL construction risks — flag as critical
+4. Overly permissive access patterns — flag as warning
 
-5. CORRECTNESS ISSUES — detect:
-   - = NULL → IS NULL — flag as critical
-   - != NULL → IS NOT NULL — flag as critical
-   - NOT IN subquery that may return NULL → NOT EXISTS — flag as critical
-   - Incorrect aggregation usage — flag as warning
+--- CORRECTNESS CHECKS ---
+1. = NULL → suggest IS NULL — flag as critical
+2. != NULL → suggest IS NOT NULL — flag as critical
+3. NOT IN with subquery that may return NULL → suggest NOT EXISTS — flag as critical
+4. Ambiguous column references (same column name in multiple tables) — flag as warning
+5. Incorrect GROUP BY usage — aggregated columns not in GROUP BY — flag as critical
+6. Duplicate aggregations — same calculation repeated — flag as warning
 
-6. INDEX RECOMMENDATIONS:
-   - JOIN key columns
-   - WHERE filter columns (most selective first)
-   - ORDER BY columns
-   - GROUP BY columns
-   - Always include example CREATE INDEX statement
+--- ANTI-PATTERN DETECTION ---
+1. JOIN filters not referencing both tables — flag as critical
+2. Redundant CTEs that are defined but never used — flag as warning
+3. Unnecessary nested queries that can be flattened — flag as suggestion
+4. Repeated calculations that can be computed once in a CTE — flag as suggestion
+5. Implicit type conversions in JOIN or WHERE conditions — flag as warning
 
-7. QUERY COMPLEXITY SCORE (1-100):
-   - Low (1-30): simple queries, 1-2 joins, no subqueries
-   - Medium (31-60): multiple joins, aggregations, basic subqueries
-   - High (61-80): window functions, CTEs, correlated subqueries
-   - Very High (81-100): deeply nested, multiple CTEs, complex analytics
+--- INDEX RECOMMENDATION RULES ---
+Suggest composite and single-column indexes for:
+1. JOIN key columns (highest priority)
+2. WHERE filter columns (most selective first)
+3. GROUP BY columns
+4. ORDER BY columns
+5. PARTITION BY columns in window functions
+Prefer composite indexes when multiple columns appear together in filters or joins.
+Always include example CREATE INDEX statement.
 
-8. SCORE BREAKDOWN: Rate each category 0-100 — performance, security, correctness, readability.
+--- QUERY COMPLEXITY SCORE (1-100) ---
+Low (1-30): simple queries, 1-2 joins, no subqueries, basic filters
+Medium (31-60): multiple joins, aggregations, basic subqueries or CTEs
+High (61-80): window functions, multiple CTEs, correlated subqueries
+Very High (81-100): deeply nested, many CTEs, complex analytics, multiple window functions
 
-9. REFACTORED SQL: Generate fully optimized version preserving original logic. Apply all safe rewrites. Do NOT change semantics without flagging.
+--- SCORE BREAKDOWN ---
+Rate each independently 0-100:
+- performance: based on sargability, join efficiency, aggregation approach
+- security: based on injection risks, hardcoded values
+- correctness: based on NULL handling, GROUP BY correctness, join logic
+- readability: based on aliases, formatting, CTE naming, comments
 
-10. DB DETECTION: TOP=SQLServer, LIMIT=MySQL/Postgres, ROWNUM=Oracle, DATE_TRUNC/ILIKE=Postgres, QUALIFY=Snowflake.`;
+--- REFACTORING RULE ---
+When generating refactoredSnippet:
+1. Preserve original logic exactly
+2. Preserve all join types (LEFT, RIGHT, FULL)
+3. Preserve result set meaning and row count
+4. Apply only safe performance improvements: sargable rewrites, index-friendly filters
+5. Do NOT change LEFT JOIN to INNER JOIN
+6. Do NOT move JOIN conditions to WHERE clause
+7. If a rewrite would change semantics, report as a finding instead
+
+--- DB DETECTION ---
+TOP = SQL Server | LIMIT = MySQL or PostgreSQL | ROWNUM = Oracle | DATE_TRUNC/ILIKE = PostgreSQL | QUALIFY = Snowflake | NVL = Oracle | IFNULL = MySQL`;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -105,7 +145,6 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -126,7 +165,7 @@ export default async function handler(req, res) {
         model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: 'Review this SQL:\n\n' + sql }
+          { role: 'user', content: 'Review this SQL query:\n\n' + sql }
         ],
         temperature: 0.2,
         max_tokens: 6000
