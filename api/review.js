@@ -1,6 +1,15 @@
+// ✅ Updated Next.js API route (drop-in replacement)
+// Improvements:
+// 1) Adds rare-case rules to SYSTEM_PROMPT (keyset tie-breaker, MAX+join-back tie bug, LEFT JOIN OR NULL ambiguity, LEFT JOIN COUNT(*) bug, DISTINCT->EXISTS preference, SQL validity rule)
+// 2) Handles non-2xx Groq responses
+// 3) Safe JSON parse fallback so UI never breaks
+// 4) Basic input validation + length cap
+// 5) Optional quick fix for common LLM glitch ("ON ON")
+
 const SYSTEM_PROMPT = `You are an expert SQL Code Review Agent and Database Performance Engineer for Data Engineering teams.
 
 Analyze the provided SQL query and return ONLY valid JSON (no markdown, no backticks) in this exact format:
+
 {
   "querySummary": "Plain English explanation of what this query does",
   "detectedDB": "mysql|postgres|sqlserver|oracle|snowflake|unknown",
@@ -67,7 +76,7 @@ Detect and report all of the following:
    Sargable rewrite: YEAR(col)=2024 → col >= '2024-01-01' AND col < '2025-01-01'
 3. Cartesian joins — missing or incorrect ON clause — flag as critical
 4. Correlated subqueries / N+1 patterns — flag as critical, suggest JOIN rewrite
-5. Unnecessary DISTINCT — flag as warning
+5. Unnecessary DISTINCT — flag as warning (prefer EXISTS if deduping parent rows)
 6. GROUP BY without clear aggregation purpose — flag as warning
 7. ORDER BY on non-indexed columns without LIMIT — flag as warning
 8. Large aggregations without WHERE filtering — flag as warning
@@ -133,57 +142,128 @@ When generating refactoredSnippet:
 5. Do NOT change LEFT JOIN to INNER JOIN
 6. Do NOT move JOIN conditions to WHERE clause
 7. If a rewrite would change semantics, report as a finding instead
+8. refactoredSnippet must be executable SQL: no duplicate keywords (e.g., "ON ON") and aliases must be consistent.
+
+--- ADVANCED / RARE CASE RULES ---
+1) Keyset pagination (OFFSET rewrite) MUST be stable:
+- When replacing OFFSET, ALWAYS include a tie-breaker primary key in ORDER BY and cursor predicate:
+  WHERE (sort_col < :last_sort) OR (sort_col = :last_sort AND pk < :last_pk)
+  ORDER BY sort_col DESC, pk DESC
+- If no PK known, use the best candidate (id/order_id) and mention assumption.
+
+2) Latest row per group (MAX + join-back) tie bug:
+- If query uses MAX(created_at) (or MAX(any_col)) in a subquery and joins back to fetch full rows,
+  warn that ties can return multiple rows per group (Correctness).
+- Prefer ROW_NUMBER() OVER (PARTITION BY group ORDER BY sort DESC, pk DESC) = 1.
+
+3) LEFT JOIN + OR NULL ambiguity:
+- If WHERE contains (right.col = X OR right.col IS NULL) with a LEFT JOIN, do NOT auto-refactor silently.
+  Provide two options and label them clearly, explaining the semantic difference.
+
+4) LEFT JOIN + COUNT(*) overcount:
+- If LEFT JOIN is used and COUNT(*) is present, warn it counts NULL-extended rows.
+  Suggest COUNT(right.pk) or COUNT(right.non_null_col).
+
+5) DISTINCT masking duplicates:
+- If SELECT DISTINCT is used only to deduplicate parent columns after joining child tables,
+  prefer EXISTS rewrite (Performance + Readability) and preserve child existence checks inside EXISTS.
 
 --- DB DETECTION ---
 TOP = SQL Server | LIMIT = MySQL or PostgreSQL | ROWNUM = Oracle | DATE_TRUNC/ILIKE = PostgreSQL | QUALIFY = Snowflake | NVL = Oracle | IFNULL = MySQL`;
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
+
+  const { sql } = req.body || {};
+  if (typeof sql !== "string" || sql.trim().length < 3) {
+    return res.status(400).json({ error: "No SQL provided" });
   }
 
-  const { sql } = req.body;
-  if (!sql) {
-    return res.status(400).json({ error: 'No SQL provided' });
+  // simple cap to avoid huge payloads / token abuse
+  const MAX_SQL_CHARS = 20000;
+  const safeSql = sql.trim().slice(0, MAX_SQL_CHARS);
+
+  if (!process.env.GROQ_API_KEY) {
+    return res.status(500).json({ error: "Missing GROQ_API_KEY" });
   }
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: "llama-3.3-70b-versatile",
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: 'Review this SQL query:\n\n' + sql }
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: "Review this SQL query:\n\n" + safeSql },
         ],
         temperature: 0.2,
-        max_tokens: 6000
-      })
+        max_tokens: 6000,
+      }),
     });
+
+    // ✅ handle non-2xx from Groq
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      return res.status(502).json({
+        error: "Groq API request failed",
+        status: response.status,
+        details: errText.slice(0, 2000),
+      });
+    }
 
     const data = await response.json();
 
-    if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+    if (data?.error) {
+      return res.status(500).json({ error: data.error.message || "Groq API error" });
     }
 
-    const text = data.choices?.[0]?.message?.content || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    return res.status(200).json(parsed);
+    const text = data?.choices?.[0]?.message?.content || "";
+    let clean = text.replace(/```json|```/g, "").trim();
 
+    // Optional: fix a common LLM glitch; still validate JSON below
+    clean = clean.replace(/\bON\s+ON\b/g, "ON");
+
+    // ✅ safe JSON parse with fallback
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch (e) {
+      return res.status(200).json({
+        querySummary: "Model did not return valid JSON.",
+        detectedDB: "unknown",
+        score: 0,
+        complexityScore: { value: 1, level: "Low", reason: "Invalid JSON output" },
+        scoreBreakdown: { performance: 0, security: 0, correctness: 0, readability: 0 },
+        findings: [
+          {
+            id: 1,
+            severity: "critical",
+            category: "Best Practice",
+            title: "Invalid JSON response",
+            description: "LLM output was not valid JSON, so it cannot be safely rendered.",
+            lineRef: "",
+            fix: "Tighten prompt or enforce JSON-only mode if available.",
+          },
+        ],
+        indexRecommendations: [],
+        optimizationSuggestions: [],
+        positives: [],
+        refactoredSnippet: "",
+        raw: clean.slice(0, 1500),
+      });
+    }
+
+    return res.status(200).json(parsed);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err?.message || "Unknown error" });
   }
 }
