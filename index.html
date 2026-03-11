@@ -12,9 +12,9 @@
     color:#c9d1d9; height:100vh;
     display:flex; flex-direction:column; overflow:hidden;
   }
-  @keyframes spin    { to { transform:rotate(360deg); } }
-  @keyframes fadeIn  { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes spin   { to { transform:rotate(360deg); } }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
   #header {
     background:linear-gradient(90deg,#0d1117,#161b22);
@@ -75,13 +75,14 @@
   #btn-wrap { padding:14px 16px; border-top:1px solid #21262d; background:#161b22; }
 
   #right { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
   #idle-state {
     flex:1; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:12px;
   }
   #idle-icon { font-size:52px; opacity:0.15; }
   #idle-text { font-size:13px; color:#484f58; }
-  #idle-sub  { font-size:11px; color:#30363d; text-align:center; max-width:260px; line-height:1.8; }
+  #idle-sub  { font-size:11px; color:#30363d; text-align:center; max-width:280px; line-height:1.8; }
 
   #loading-state {
     flex:1; display:none; flex-direction:column;
@@ -96,29 +97,56 @@
   #loading-sub  { color:#7d8590; font-size:10px; letter-spacing:1px; }
 
   #results { flex:1; display:none; flex-direction:column; overflow:hidden; }
+
   #score-bar {
-    padding:16px 22px; border-bottom:1px solid #21262d;
-    background:#161b22; display:flex; align-items:center; gap:20px;
-    animation:fadeIn 0.4s ease; flex-shrink:0;
+    padding:14px 22px 10px; border-bottom:1px solid #21262d;
+    background:#161b22; animation:fadeIn 0.4s ease; flex-shrink:0;
   }
+  #score-row { display:flex; align-items:flex-start; gap:20px; margin-bottom:10px; }
   #score-num   { font-size:48px; font-weight:800; line-height:1; text-align:center; min-width:60px; }
   #score-label { font-size:9px; color:#7d8590; letter-spacing:2px; margin-top:4px; text-align:center; }
-  #summary-text { font-size:12px; color:#c9d1d9; line-height:1.7; margin-bottom:10px; }
+  #summary-text { font-size:12px; color:#c9d1d9; line-height:1.7; margin-bottom:8px; }
   #badges { display:flex; gap:8px; flex-wrap:wrap; }
   .badge { padding:2px 10px; border-radius:20px; font-size:10px; font-weight:700; }
   .badge-critical   { background:#2a0505; border:1px solid #ff4d4d; color:#ff4d4d; }
   .badge-warning    { background:#1a1000; border:1px solid #ffaa00; color:#ffaa00; }
   .badge-suggestion { background:#001525; border:1px solid #4db8ff; color:#4db8ff; }
 
+  #breakdown-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .breakdown-card {
+    flex:1; min-width:80px;
+    background:#0d1117; border:1px solid #21262d;
+    border-radius:8px; padding:7px 10px; text-align:center;
+  }
+  .breakdown-label { font-size:9px; color:#7d8590; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px; }
+  .breakdown-val   { font-size:18px; font-weight:800; }
+
+  #meta-row {
+    display:flex; gap:8px; padding:8px 22px;
+    border-bottom:1px solid #21262d; background:#0d1117;
+    flex-shrink:0; flex-wrap:wrap; animation:fadeIn 0.4s ease;
+  }
+  .meta-chip {
+    display:flex; align-items:center; gap:6px;
+    background:#161b22; border:1px solid #21262d;
+    border-radius:20px; padding:4px 12px; font-size:10px; color:#c9d1d9;
+  }
+  .meta-chip-label { color:#7d8590; margin-right:2px; }
+  .cx-low    { color:#00e676; }
+  .cx-medium { color:#ffaa00; }
+  .cx-high   { color:#ff8800; }
+  .cx-veryhigh { color:#ff4d4d; }
+
   #tabs {
     display:flex; border-bottom:1px solid #21262d;
-    background:#0d1117; padding:0 22px; flex-shrink:0;
+    background:#0d1117; padding:0 22px; flex-shrink:0; overflow-x:auto;
   }
   .tab-btn {
     background:none; border:none; border-bottom:2px solid transparent;
-    color:#7d8590; padding:11px 14px; cursor:pointer;
+    color:#7d8590; padding:10px 12px; cursor:pointer;
     font-size:10px; font-weight:600; letter-spacing:0.5px;
     text-transform:uppercase; font-family:inherit; transition:all 0.15s;
+    white-space:nowrap;
   }
   .tab-btn:hover { color:#e6edf3; }
   .tab-btn.active { color:#e6edf3; border-bottom-color:#388bfd; }
@@ -152,11 +180,42 @@
   .pos-check { color:#00e676; flex-shrink:0; }
 
   #refactor-label { font-size:10px; color:#7d8590; letter-spacing:1px; margin-bottom:10px; text-transform:uppercase; }
+  #refactor-wrap { position:relative; }
+  #copy-btn {
+    position:absolute; top:10px; right:10px;
+    background:#1f6feb; border:none; color:#fff;
+    padding:4px 10px; border-radius:5px; font-size:10px;
+    cursor:pointer; font-family:inherit;
+  }
+  #copy-btn:hover { background:#388bfd; }
   #refactor-code {
     background:#0d1117; border:1px solid #21262d; border-radius:8px; padding:18px;
     font-size:11px; color:#e6edf3; line-height:1.9;
     overflow:auto; white-space:pre-wrap; font-family:'JetBrains Mono','Fira Code',monospace;
+    min-height:80px;
   }
+
+  .index-card {
+    background:#0d1117; border:1px solid #21262d;
+    border-left:3px solid #388bfd; border-radius:8px;
+    padding:12px 14px; margin-bottom:8px;
+  }
+  .index-table  { font-size:11px; color:#388bfd; font-weight:700; margin-bottom:4px; }
+  .index-cols   { font-size:11px; color:#e6edf3; margin-bottom:4px; }
+  .index-reason { font-size:11px; color:#7d8590; margin-bottom:8px; line-height:1.7; }
+  .index-example {
+    background:#161b22; border-radius:5px; padding:8px 10px;
+    font-size:10px; color:#00e676; font-family:inherit; white-space:pre-wrap;
+  }
+
+  .opt-item {
+    display:flex; gap:10px; align-items:flex-start;
+    padding:10px 14px; margin-bottom:8px;
+    background:#0d1520; border:1px solid #1f6feb30;
+    border-left:3px solid #1f6feb; border-radius:8px;
+    font-size:12px; color:#8b949e; line-height:1.7;
+  }
+  .opt-icon { color:#388bfd; flex-shrink:0; }
 
   #error-box {
     display:none; margin:20px;
@@ -191,7 +250,7 @@
       <span id="editor-label">query.sql</span>
       <button id="clear-btn" onclick="document.getElementById('sql-input').value=''">CLEAR</button>
     </div>
-    <textarea id="sql-input" placeholder="-- Paste your SQL query or stored procedure here...
+    <textarea id="sql-input" placeholder="-- Paste your SQL query here...
 -- Try SELECT *, old-style joins, or correlated subqueries!"></textarea>
     <div id="btn-wrap">
       <button id="run-btn" onclick="runReview()">▶  RUN CODE REVIEW</button>
@@ -202,7 +261,7 @@
     <div id="idle-state">
       <div id="idle-icon">🔍</div>
       <div id="idle-text">Paste SQL and run a review</div>
-      <div id="idle-sub">Detects performance issues, anti-patterns, security risks, and best practice violations</div>
+      <div id="idle-sub">Detects performance issues, anti-patterns, security risks, semantic safety violations, and best practice violations</div>
     </div>
     <div id="loading-state">
       <div id="spinner"></div>
@@ -212,27 +271,41 @@
     <div id="error-box"></div>
     <div id="results">
       <div id="score-bar">
-        <div>
-          <div id="score-num">—</div>
-          <div id="score-label">QUALITY SCORE</div>
+        <div id="score-row">
+          <div>
+            <div id="score-num">—</div>
+            <div id="score-label">QUALITY SCORE</div>
+          </div>
+          <div style="flex:1">
+            <div id="summary-text"></div>
+            <div id="badges"></div>
+          </div>
         </div>
-        <div style="flex:1">
-          <div id="summary-text"></div>
-          <div id="badges"></div>
-        </div>
+        <div id="breakdown-row"></div>
       </div>
+
+      <div id="meta-row"></div>
+
       <div id="tabs">
         <button class="tab-btn active" onclick="switchTab('findings',this)" id="tab-findings">Findings</button>
         <button class="tab-btn" onclick="switchTab('positives',this)" id="tab-positives">Positives</button>
         <button class="tab-btn" onclick="switchTab('refactor',this)" id="tab-refactor">Refactored SQL</button>
+        <button class="tab-btn" onclick="switchTab('indexes',this)" id="tab-indexes">Index Advisor</button>
+        <button class="tab-btn" onclick="switchTab('optimize',this)" id="tab-optimize">Optimizations</button>
       </div>
+
       <div id="tab-content">
         <div id="panel-findings"  class="tab-panel active"></div>
         <div id="panel-positives" class="tab-panel"></div>
         <div id="panel-refactor"  class="tab-panel">
           <div id="refactor-label">AI-Suggested Refactored Version</div>
-          <pre id="refactor-code"></pre>
+          <div id="refactor-wrap">
+            <button id="copy-btn" onclick="copyRefactor()">📋 COPY</button>
+            <pre id="refactor-code"></pre>
+          </div>
         </div>
+        <div id="panel-indexes"  class="tab-panel"></div>
+        <div id="panel-optimize" class="tab-panel"></div>
       </div>
     </div>
   </div>
@@ -244,8 +317,17 @@ const SEV = {
   warning:    {color:'#ffaa00',bg:'#1a1000',bl:'#ffaa00',icon:'⚠️',label:'WARNING'},
   suggestion: {color:'#4db8ff',bg:'#001525',bl:'#4db8ff',icon:'💡',label:'SUGGESTION'}
 };
-const CAT = {Performance:'⚡',Security:'🔒',Readability:'📖','Best Practice':'✅','Anti-pattern':'🚫'};
-function scoreColor(s){return s>=80?'#00e676':s>=60?'#ffaa00':'#ff4d4d';}
+const CAT_ICON = {
+  Performance:'⚡', Security:'🔒', Readability:'📖',
+  'Best Practice':'✅', 'Anti-pattern':'🚫',
+  Correctness:'🔧', 'Semantic-Safety':'⚖️'
+};
+
+function scoreColor(s){ return s>=80?'#00e676':s>=60?'#ffaa00':'#ff4d4d'; }
+
+function cxClass(level){
+  return {'Low':'cx-low','Medium':'cx-medium','High':'cx-high','Very High':'cx-veryhigh'}[level]||'cx-medium';
+}
 
 function switchTab(name,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -271,17 +353,26 @@ function toggleFinding(id){
   chev.textContent=open?'▼':'▲';
 }
 
+function copyRefactor(){
+  const text=document.getElementById('refactor-code').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='✅ COPIED!';
+    setTimeout(()=>btn.textContent='📋 COPY',2000);
+  });
+}
+
 async function runReview(){
   const sql=document.getElementById('sql-input').value.trim();
   if(!sql) return;
   setState('loading');
   try{
-    const res = await fetch('/api/review', {
+    const res=await fetch('/api/review',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({sql})
     });
-    const r = await res.json();
+    const r=await res.json();
     if(r.error) throw new Error(r.error);
     renderResults(r);
   }catch(err){
@@ -296,26 +387,60 @@ function renderResults(r){
   sc.textContent=r.score;
   sc.style.color=scoreColor(r.score);
   sc.style.textShadow=`0 0 24px ${scoreColor(r.score)}80`;
-  document.getElementById('summary-text').textContent=r.summary;
+
+  document.getElementById('summary-text').textContent=r.querySummary||r.summary||'';
 
   const counts={critical:0,warning:0,suggestion:0};
-  r.findings.forEach(f=>counts[f.severity]++);
+  (r.findings||[]).forEach(f=>counts[f.severity]=(counts[f.severity]||0)+1);
   const bd=document.getElementById('badges');
   bd.innerHTML='';
   if(counts.critical)   bd.innerHTML+=`<span class="badge badge-critical">⛔ ${counts.critical} Critical</span>`;
   if(counts.warning)    bd.innerHTML+=`<span class="badge badge-warning">⚠️ ${counts.warning} Warning</span>`;
   if(counts.suggestion) bd.innerHTML+=`<span class="badge badge-suggestion">💡 ${counts.suggestion} Suggestion</span>`;
 
-  document.getElementById('tab-findings').textContent=`Findings (${r.findings.length})`;
-  document.getElementById('tab-positives').textContent=`Positives (${(r.positives||[]).length})`;
+  // SCORE BREAKDOWN
+  const bdr=document.getElementById('breakdown-row');
+  bdr.innerHTML='';
+  if(r.scoreBreakdown){
+    [{key:'performance',label:'Performance',icon:'⚡'},
+     {key:'security',label:'Security',icon:'🔒'},
+     {key:'correctness',label:'Correctness',icon:'🔧'},
+     {key:'readability',label:'Readability',icon:'📖'}
+    ].forEach(c=>{
+      const val=r.scoreBreakdown[c.key]??'—';
+      const col=typeof val==='number'?scoreColor(val):'#7d8590';
+      bdr.innerHTML+=`<div class="breakdown-card">
+        <div class="breakdown-label">${c.icon} ${c.label}</div>
+        <div class="breakdown-val" style="color:${col}">${val}</div>
+      </div>`;
+    });
+  }
 
+  // META ROW
+  const meta=document.getElementById('meta-row');
+  meta.innerHTML='';
+  if(r.detectedDB && r.detectedDB!=='unknown')
+    meta.innerHTML+=`<div class="meta-chip"><span>🗄️</span><span class="meta-chip-label">DB:</span>${r.detectedDB.toUpperCase()}</div>`;
+  if(r.complexityScore){
+    meta.innerHTML+=`<div class="meta-chip"><span>📊</span><span class="meta-chip-label">Complexity:</span><span class="${cxClass(r.complexityScore.level)}">${r.complexityScore.level} (${r.complexityScore.value}/100)</span></div>`;
+    if(r.complexityScore.reason)
+      meta.innerHTML+=`<div class="meta-chip" style="flex:1"><span>ℹ️</span><span style="color:#7d8590;font-size:10px">${r.complexityScore.reason}</span></div>`;
+  }
+
+  // TAB LABELS
+  document.getElementById('tab-findings').textContent  =`Findings (${(r.findings||[]).length})`;
+  document.getElementById('tab-positives').textContent =`Positives (${(r.positives||[]).length})`;
+  document.getElementById('tab-indexes').textContent   =`Index Advisor (${(r.indexRecommendations||[]).length})`;
+  document.getElementById('tab-optimize').textContent  =`Optimizations (${(r.optimizationSuggestions||[]).length})`;
+
+  // FINDINGS
   const fp=document.getElementById('panel-findings');
   fp.innerHTML='';
-  if(!r.findings.length){
+  if(!(r.findings||[]).length){
     fp.innerHTML='<div style="color:#00e676;text-align:center;padding:30px;font-size:13px;">✅ No issues found. Great SQL!</div>';
   } else {
     r.findings.forEach(f=>{
-      const cfg=SEV[f.severity];
+      const cfg=SEV[f.severity]||SEV.suggestion;
       const d=document.createElement('div');
       d.className='finding';
       d.style.cssText=`background:${cfg.bg};border:1px solid ${cfg.bl}30;border-left:3px solid ${cfg.bl};`;
@@ -325,7 +450,7 @@ function renderResults(r){
           <div style="flex:1">
             <div class="finding-meta">
               <span class="sev-label" style="color:${cfg.color}">${cfg.label}</span>
-              <span class="cat-label">${CAT[f.category]||''} ${f.category}</span>
+              <span class="cat-label">${CAT_ICON[f.category]||''} ${f.category}</span>
               ${f.lineRef?`<span class="line-ref">${f.lineRef}</span>`:''}
             </div>
             <div class="finding-title">${f.title}</div>
@@ -340,14 +465,44 @@ function renderResults(r){
     });
   }
 
+  // POSITIVES
   const pp=document.getElementById('panel-positives');
   pp.innerHTML='';
   (r.positives||[]).forEach(p=>{
     pp.innerHTML+=`<div class="positive"><span class="pos-check">✓</span><span>${p}</span></div>`;
   });
 
+  // REFACTOR
   document.getElementById('refactor-code').textContent=r.refactoredSnippet||'No refactored snippet provided.';
 
+  // INDEX ADVISOR
+  const ip=document.getElementById('panel-indexes');
+  ip.innerHTML='';
+  if(!(r.indexRecommendations||[]).length){
+    ip.innerHTML='<div style="color:#7d8590;text-align:center;padding:30px;font-size:12px;">No index recommendations for this query.</div>';
+  } else {
+    (r.indexRecommendations||[]).forEach(idx=>{
+      ip.innerHTML+=`<div class="index-card">
+        <div class="index-table">📋 ${idx.table}</div>
+        <div class="index-cols">Columns: <strong>${(idx.columns||[]).join(', ')}</strong></div>
+        <div class="index-reason">${idx.reason}</div>
+        ${idx.example?`<pre class="index-example">${idx.example}</pre>`:''}
+      </div>`;
+    });
+  }
+
+  // OPTIMIZATIONS
+  const op=document.getElementById('panel-optimize');
+  op.innerHTML='';
+  if(!(r.optimizationSuggestions||[]).length){
+    op.innerHTML='<div style="color:#7d8590;text-align:center;padding:30px;font-size:12px;">No additional optimization suggestions.</div>';
+  } else {
+    (r.optimizationSuggestions||[]).forEach(s=>{
+      op.innerHTML+=`<div class="opt-item"><span class="opt-icon">→</span><span>${s}</span></div>`;
+    });
+  }
+
+  // RESET TABS
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-findings').classList.add('active');
